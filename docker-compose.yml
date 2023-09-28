@@ -1,0 +1,14 @@
+version: '3.9'
+
+
+services:
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: SQLSERVER2022
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Testing123@
+      - MSSQL_PID=Express
+    ports:
+      - 1433:1433
