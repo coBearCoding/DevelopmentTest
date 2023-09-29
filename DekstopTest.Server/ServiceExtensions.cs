@@ -17,5 +17,18 @@ namespace DekstopTest.Server
 			services.AddScoped<IClientRepository, ClientRepository>();
 			services.AddScoped<ICourseRepository, CourseRepository>();
 		}
+
+		public static void ConfigureCORS(this IServiceCollection services)
+		{
+			var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+			services.AddCors(options =>
+			{
+				options.AddPolicy(name: MyAllowSpecificOrigins,
+					policy =>
+					{
+						policy.AllowAnyOrigin();
+					});
+			});
+		}
 	}
 }

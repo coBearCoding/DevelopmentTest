@@ -1,46 +1,59 @@
 ﻿@page "/fetchdata"
+@using DesktopTest.Client.Data.Services;
+@inject IClientService ClientService
 
-@using DesktopTest.Client.Data
-@inject WeatherForecastService ForecastService
 
-<h1>Weather forecast</h1>
+<h1> Visualizar Clientes </h1>
 
-<p>This component demonstrates fetching data from a service.</p>
-
-@if (forecasts == null)
+@if (clients == null) 
 {
 	<p><em>Loading...</em></p>
 }
+
 else
 {
+	<FormModal @ref="Modal"/>
+	<button class="btn btn-primary" @onclick="() => Modal.Open()">Anadir Cliente</button>
 	<table class="table">
 		<thead>
 			<tr>
-				<th>Date</th>
-				<th>Temp. (C)</th>
-				<th>Temp. (F)</th>
-				<th>Summary</th>
+				<th>Nombre</th>
+				<th>Apellido</th>
+				<th>Cedula</th>
+				<th>Correo</th>
+				<th>Telefono</th>
+				<th>Foto de Perfil</th>
+				<th>Cursos</th>
+
 			</tr>
 		</thead>
 		<tbody>
-			@foreach (var forecast in forecasts)
+			@foreach (var client in clients)
 			{
 				<tr>
-					<td>@forecast.Date.ToShortDateString()</td>
-					<td>@forecast.TemperatureC</td>
-					<td>@forecast.TemperatureF</td>
-					<td>@forecast.Summary</td>
+					<td>@client.Nombre</td>
+					<td>@client.Apellido</td>
+					<td>@client.Cedula</td>
+					<td>@client.Correo</td>
+					<td>@client.Telefono</td>
+					<td>@client.URLFotoPerfil</td>
+					<td>@client.Cursos</td>
+
 				</tr>
 			}
 		</tbody>
 	</table>
 }
 
-@code {
-	private WeatherForecast[] forecasts;
+
+@code{
+
+	private FormModal Modal { get; set; }
+
+	private List<Data.Models.Client> clients;
 
 	protected override async Task OnInitializedAsync()
 	{
-		forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+		clients = await ClientService.GetClientsAsync();
 	}
 }

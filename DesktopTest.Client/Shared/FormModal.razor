@@ -1,0 +1,96 @@
+﻿@using DesktopTest.Client.Data.Models;
+@using DesktopTest.Client.Data.Services;
+@inject Client ClientModel
+@inject IClientService ClientService
+
+<div class="modal @ModalClass" tabindex="-1" role="dialog" style="display:@ModalDisplay">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="() => Close()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <EditForm Model="ClientModel" OnValidSubmit="HandleValidSubmit">
+                <div class="form-group">
+                    <label for="nombre">Nombre:</label>
+                    <InputText id="nombre" @bind-Value="ClientModel.Nombre" class="form-control" />
+                    <ValidationMessage For="@(() => ClientModel.Nombre)" />
+                </div>
+                <div class="form-group">
+                    <label for="apellido">Apellido:</label>
+                    <InputText id="apellido" @bind-Value="ClientModel.Apellido" class="form-control" />
+                    <ValidationMessage For="@(() => ClientModel.Apellido)" />
+                </div>
+                <div class="form-group">
+                    <label for="cedula">Cedula:</label>
+                    <InputText id="cedula" @bind-Value="ClientModel.Cedula" class="form-control" />
+                    <ValidationMessage For="@(() => ClientModel.Apellido)" />
+                </div>
+                <div class="form-group">
+                    <label for="correo">Correo:</label>
+                    <InputText id="correo" @bind-Value="ClientModel.Correo" class="form-control" />
+                    <ValidationMessage For="@(() => ClientModel.Correo)" />
+                </div>
+                <div class="form-group">
+                    <label for="telefono">Telefono:</label>
+                    <InputText id="telefono" @bind-Value="ClientModel.Telefono" class="form-control" />
+                    <ValidationMessage For="@(() => ClientModel.Apellido)" />
+                </div>
+                <div class="form-group">
+                    <label for="url_foto_perfil">Foto de Perfil:</label>
+                    <InputFile id="url_foto_perfil" @OnChange="@OnInputFileChanged" class="form-control" />
+                    <ValidationMessage For="@(() => ClientModel.URLFotoPerfil)" />
+                </div>
+
+                <!-- Add more form fields as required -->
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </EditForm>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="() => Close()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    public string ModalDisplay = "none;";
+    public string ModalClass = "";
+    public bool ShowBackdrop = false;
+
+    public void Open()
+    {
+        ModalDisplay = "block;";
+        ModalClass = "show";
+        ShowBackdrop = true;
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        ModalDisplay = "none";
+        ModalClass = "";
+        ShowBackdrop = false;
+        StateHasChanged();
+    }
+
+    private void HandleValidSubmit()
+    {
+        // Handle form submission logic here
+        // ClientService.
+        Close();
+    }
+
+    private async Task OnInputFileChanged(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if(file != null)
+        {
+            // Process the file
+        }
+    }
+
+
+}

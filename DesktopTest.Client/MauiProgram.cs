@@ -1,5 +1,6 @@
-﻿using DesktopTest.Client.Data;
-using Microsoft.AspNetCore.Components.WebView.Maui;
+﻿using DekstopTest.Client;
+//using DesktopTest.Client.Data.Services;
+//using Microsoft.AspNetCore.Components.WebView.Maui;
 
 namespace DesktopTest.Client
 {
@@ -20,7 +21,9 @@ namespace DesktopTest.Client
 		builder.Services.AddBlazorWebViewDeveloperTools();
 #endif
 
-			builder.Services.AddSingleton<WeatherForecastService>();
+			//builder.Services.AddSingleton<WeatherForecastService>();
+			//builder.Services.AddSingleton<ClientService>();
+			builder.Services.ConfigureServices();
 
 			return builder.Build();
 		}
