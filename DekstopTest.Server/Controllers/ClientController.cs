@@ -31,6 +31,7 @@ namespace DekstopTest.Server.Controllers
 		[HttpPost("save")]
 		public async Task<ActionResult<Models.ClientResponse>> Create([FromBody] Models.ClientRequest clientRequest)
 		{
+			Console.WriteLine(clientRequest);
 			Models.Client client = await _clientRepository.SaveClient(clientRequest);
 
 			return new ObjectResult(client) {

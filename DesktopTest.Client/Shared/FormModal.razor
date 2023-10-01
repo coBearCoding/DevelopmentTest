@@ -1,96 +1,189 @@
-﻿@using DesktopTest.Client.Data.Models;
-@using DesktopTest.Client.Data.Services;
-@inject Client ClientModel
+﻿@using DesktopTest.Client.Data.Models
+@using DesktopTest.Client.Data.Services
+@* @inject IJSRuntime JS *@
+@* @inject Client ClientModel *@
 @inject IClientService ClientService
 
 <div class="modal @ModalClass" tabindex="-1" role="dialog" style="display:@ModalDisplay">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="() => Close()">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <EditForm Model="ClientModel" OnValidSubmit="HandleValidSubmit">
-                <div class="form-group">
-                    <label for="nombre">Nombre:</label>
-                    <InputText id="nombre" @bind-Value="ClientModel.Nombre" class="form-control" />
-                    <ValidationMessage For="@(() => ClientModel.Nombre)" />
-                </div>
-                <div class="form-group">
-                    <label for="apellido">Apellido:</label>
-                    <InputText id="apellido" @bind-Value="ClientModel.Apellido" class="form-control" />
-                    <ValidationMessage For="@(() => ClientModel.Apellido)" />
-                </div>
-                <div class="form-group">
-                    <label for="cedula">Cedula:</label>
-                    <InputText id="cedula" @bind-Value="ClientModel.Cedula" class="form-control" />
-                    <ValidationMessage For="@(() => ClientModel.Apellido)" />
-                </div>
-                <div class="form-group">
-                    <label for="correo">Correo:</label>
-                    <InputText id="correo" @bind-Value="ClientModel.Correo" class="form-control" />
-                    <ValidationMessage For="@(() => ClientModel.Correo)" />
-                </div>
-                <div class="form-group">
-                    <label for="telefono">Telefono:</label>
-                    <InputText id="telefono" @bind-Value="ClientModel.Telefono" class="form-control" />
-                    <ValidationMessage For="@(() => ClientModel.Apellido)" />
-                </div>
-                <div class="form-group">
-                    <label for="url_foto_perfil">Foto de Perfil:</label>
-                    <InputFile id="url_foto_perfil" @OnChange="@OnInputFileChanged" class="form-control" />
-                    <ValidationMessage For="@(() => ClientModel.URLFotoPerfil)" />
-                </div>
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<EditForm Model="clienteModel" OnValidSubmit="@HandleValidSubmit" class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Anadir Nuevo Cliente</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="() => Close()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="nombre">Nombre:</label>
+						<InputText id="nombre" @bind-Value="clienteModel.Nombre" class="form-control" />
+						<ValidationMessage For="@(() => clienteModel.Nombre)" />
+					</div>
+					<div class="form-group">
+						<label for="apellido">Apellido:</label>
+						<InputText id="apellido" @bind-Value="clienteModel.Apellido" class="form-control" />
+						<ValidationMessage For="@(() => clienteModel.Apellido)" />
+					</div>
+					<div class="form-group">
+						<label for="cedula">Cedula:</label>
+						<InputText id="cedula" @bind-Value="clienteModel.Cedula" class="form-control" />
+						<ValidationMessage For="@(() => clienteModel.Apellido)" />
+					</div>
+					<div class="form-group">
+						<label for="correo">Correo:</label>
+						<InputText id="correo" @bind-Value="clienteModel.Correo" class="form-control" />
+						<ValidationMessage For="@(() => clienteModel.Correo)" />
+					</div>
+					<div class="form-group">
+						<label for="telefono">Telefono:</label>
+						<InputText id="telefono" @bind-Value="clienteModel.Telefono" class="form-control" />
+						<ValidationMessage For="@(() => clienteModel.Apellido)" />
+					</div>
+					<div class="form-group">
+						<label for="url_foto_perfil">Foto de Perfil:</label>
+						<InputFile id="url_foto_perfil" OnChange="@OnInputFileChanged" @bind-value="clienteModel.URLFotoPerfil" class="form-control" accept=".png,.jpeg" />
+						<ValidationMessage For="@(() => clienteModel.URLFotoPerfil)" />
+					</div>
 
-                <!-- Add more form fields as required -->
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </EditForm>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Save changes</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="() => Close()">Close</button>
-            </div>
-        </div>
-    </div>
+					@if (@ImageBase64 != "")
+					{
+						<div class="form-group">
+							<label>Previsualizacion:</label>
+							<img src="@ImageBase64" alt="image-preview" class="rounded-circle img-fluid" />
+						</div>
+					}
+					
+
+					<!-- Add more form fields as required -->
+					@* <button type="submit" class="btn btn-primary">Submit</button> *@
+
+				</div>
+
+				@if (AlertContent != null && alertType == AlertType.Error)
+				{
+					<div class="alert alert-danger @HideAlert" role="alert">
+						@AlertContent
+					</div>
+				}
+				@if (AlertContent != null && alertType == AlertType.Success)
+				{
+					<div class="alert alert-success @HideAlert" role="alert">
+						@AlertContent
+					</div>
+				}
+				
+				
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-primary">Save changes</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="() => Close()">Close</button>
+				</div>
+			</EditForm>
+		</div>
+	</div>
 </div>
 
 @code {
-    public string ModalDisplay = "none;";
-    public string ModalClass = "";
-    public bool ShowBackdrop = false;
+	public string ModalDisplay = "none;";
+	public string ModalClass = "";
+	public bool ShowBackdrop = false;
 
-    public void Open()
-    {
-        ModalDisplay = "block;";
-        ModalClass = "show";
-        ShowBackdrop = true;
-        StateHasChanged();
-    }
+	private string ImageBase64 = "";
 
-    public void Close()
-    {
-        ModalDisplay = "none";
-        ModalClass = "";
-        ShowBackdrop = false;
-        StateHasChanged();
-    }
 
-    private void HandleValidSubmit()
-    {
-        // Handle form submission logic here
-        // ClientService.
-        Close();
-    }
+	private string? AlertContent = null;
+	private enum AlertType
+	{
+		Success,
+		Error,
+		None
+	}
+	private AlertType alertType = AlertType.None;
 
-    private async Task OnInputFileChanged(InputFileChangeEventArgs e)
-    {
-        var file = e.File;
-        if(file != null)
-        {
-            // Process the file
-        }
-    }
+	private string? HideAlert = "hidden";
+
+	private Client clienteModel = new Client();
+
+
+	public void Open()
+	{
+		ModalDisplay = "block;";
+		ModalClass = "show";
+		ShowBackdrop = true;
+		StateHasChanged();
+	}
+
+	public void Close()
+	{
+		ModalDisplay = "none";
+		ModalClass = "";
+		ShowBackdrop = false;
+		StateHasChanged();
+	}
+
+	private async void HandleValidSubmit()
+	{
+
+		string response = await ClientService.SaveClientAsync(clienteModel);
+
+		Console.WriteLine(response);
+
+		if (response != "201")
+		{
+			alertType = AlertType.Error;
+			AlertContent = $"El cliente: {clienteModel.Nombre} {clienteModel.Apellido} no ha sido guardado";
+			HideAlert = null;
+			return;
+		}
+		alertType = AlertType.Success;
+		AlertContent = $"El cliente: {clienteModel.Nombre} {clienteModel.Apellido} ha sido guardado exitosamente";
+		HideAlert = null;
+
+
+		StateHasChanged();
+
+		// Close();
+	}
+
+	private async Task OnInputFileChanged(InputFileChangeEventArgs e)
+	{
+
+		// * Preview image
+		var file = e.File;
+		long maxFileSize = 1024 * 1024 * 10;
+
+		if (!file.ContentType.Contains("image/jpeg") && !file.ContentType.Contains("image/png"))
+		{
+			alertType = AlertType.Error;
+			AlertContent = "Solo se soportan archivos .jpeg or .png";
+			HideAlert = null;
+			return;
+		}
+
+		if (file.Size > maxFileSize)
+		{
+			alertType = AlertType.Error;
+			AlertContent = "Solo se soportan archivos máximo hasta 10mb";
+			HideAlert = null;
+			return;
+		}
+
+		var ms = new MemoryStream();
+		await file.OpenReadStream().CopyToAsync(ms);
+
+		var fileBytes = ms.ToArray();
+
+
+		if (file.ContentType.Contains("image/jpeg"))
+		{
+			ImageBase64 = "data:image/jpeg;base64," + Convert.ToBase64String(fileBytes);
+
+		}
+		else if (file.ContentType.Contains("image/png"))
+		{
+			ImageBase64 = "data:image/png;base64," + Convert.ToBase64String(fileBytes);
+		}
+	}
 
 
 }
